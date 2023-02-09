@@ -1,6 +1,7 @@
 """Increment the major.minor.patch version string in the provided file."""
 
 import re
+import subprocess
 import sys
 from argparse import ArgumentParser
 from pathlib import Path
@@ -8,11 +9,52 @@ from pathlib import Path
 parser = ArgumentParser()
 parser.add_argument("file", help="The file containing the version string", type=Path)
 parser.add_argument(
-    "version", type=str, help="The version to bump", choices=["major", "minor", "patch"]
+    "version",
+    type=str,
+    help="The version to bump; 'infer' will try to infer the version from the last commit message",
+    choices=["major", "minor", "patch", "infer"],
 )
 parser.add_argument("--verbose", "-v", action="store_true")
 
 PATTERN = r"(?:^|\W+)version += +(\d+\.\d+\.\d+)(?:$|\W+)"
+
+
+def get_last_commit_message() -> str:
+    """Get the last commit message.
+
+    Returns
+    -------
+    str
+        The last commit message.
+    """
+    return (
+        subprocess.run(
+            ["git", "log", "-1", "--format=%B"], check=True, capture_output=True
+        )
+        .stdout.decode("utf-8")
+        .strip()
+    )
+
+
+def infer_version_from_commit_message(msg: str) -> str:
+    """Infer the semver version to increment based on a commit message.
+
+    Parameters
+    ----------
+    msg : str
+        A commit message
+
+    Returns
+    -------
+    str
+        One of 'major', 'minor', or 'patch'
+    """
+    if "feat!" in msg:
+        return "major"
+    elif "feat" in msg:
+        return "minor"
+    else:
+        return "patch"
 
 
 def print_and_exit(msg: str, exit_code: int = 1) -> None:
@@ -51,9 +93,12 @@ def main() -> None:
 
     major, minor, patch = tuple(map(int, version_string.split(".")))
 
-    if sys.argv[1] == "major":
+    if args.version == "infer":
+        args.version = infer_version_from_commit_message(get_last_commit_message())
+
+    if args.version == "major":
         major += 1
-    elif sys.argv[1] == "minor":
+    elif args.version == "minor":
         minor += 1
     else:
         patch += 1

@@ -1,0 +1,20 @@
+name: 'Bump Semantic Version'
+description: 'Increment the semver version string in a plain text file.'
+inputs:
+  file:
+    description: 'Plain text file containing a version string.'
+    required: true
+  version:
+    description: 'The version to bump, either major, minor, or patch.'
+    required: false
+    default: "infer"
+runs:
+  using: 'composite'
+  steps:
+  - uses: actions/checkout@v3
+  - uses: actions/setup-python@v4
+    with:
+      python-version: '3.7'
+  - run: python bump.py ${{ inputs.file inputs.version }}
+    shell: bash
+  - uses: stefanzweifel/git-auto-commit-action@v4
