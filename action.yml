@@ -18,3 +18,5 @@ runs:
   - run: python ${{ github.action_path }}/bump.py ${{ inputs.file }} ${{ inputs.version }}
     shell: bash
   - uses: stefanzweifel/git-auto-commit-action@v4
+    with:
+      commit_message: docs: auto-update version string
