@@ -15,6 +15,6 @@ runs:
   - uses: actions/setup-python@v4
     with:
       python-version: '3.7'
-  - run: python bump.py ${{ inputs.file }} ${{ inputs.version }}
+  - run: python ${{ github.action_path }}/bump.py ${{ inputs.file }} ${{ inputs.version }}
     shell: bash
   - uses: stefanzweifel/git-auto-commit-action@v4
