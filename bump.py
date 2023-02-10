@@ -98,8 +98,11 @@ def main() -> None:
 
     if args.version == "major":
         major += 1
+        minor = 0
+        patch = 0
     elif args.version == "minor":
         minor += 1
+        patch = 0
     else:
         patch += 1
 
