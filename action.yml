@@ -8,6 +8,10 @@ inputs:
     description: 'The version to bump, either major, minor, patch, or infer.'
     required: false
     default: "infer"
+  push_options:
+    description: 'Options to pass to push, see stefanzweifel/git-auto-commit-action@v4'
+    required: false
+    default: ""
 runs:
   using: 'composite'
   steps:
@@ -21,3 +25,4 @@ runs:
     with:
       commit_message: 'docs: auto-update version string'
       file_pattern: '{{ inputs.file }}'
+      push_options: '{{ inputs.push_options}}'
