@@ -25,4 +25,4 @@ runs:
     with:
       commit_message: 'docs: auto-update version string'
       file_pattern: '{{ inputs.file }}'
-      push_options: '{{ inputs.push_options}}'
+      push_options: '{{ inputs.push_options }}'
